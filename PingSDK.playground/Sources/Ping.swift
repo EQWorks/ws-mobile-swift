@@ -1,6 +1,6 @@
 import Foundation
 
-func ping(api: String, lat: Double = 0.0, lon: Double = 0.0) {
+func ping(api: String, lat: Double = 0.0, lon: Double = 0.0, callback: @escaping (Data) -> Void) {
     // prepare HTTP request
     var req = URLRequest(url: URL(string: api)!)
     req.httpMethod = "POST"
@@ -13,11 +13,9 @@ func ping(api: String, lat: Double = 0.0, lon: Double = 0.0) {
     ])
     req.httpBody = payload
     // init URL session
-    let task = URLSession.shared.dataTask(with: req) { (data, _, error) in
+    let task = URLSession.shared.dataTask(with: req) { (data, _, _) in
         guard let data = data else { return }
-        if let res = String(data: data, encoding: .utf8) {
-            print(res)
-        }
+        return callback(data)
     }
     task.resume()
 }
