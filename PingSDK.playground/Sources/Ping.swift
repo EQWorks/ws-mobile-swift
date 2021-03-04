@@ -1,21 +1,21 @@
 import Foundation
 
-func ping(api: String, lat: Double = 0.0, lon: Double = 0.0, callback: @escaping (Data) -> Void) {
-    // prepare HTTP request
-    var req = URLRequest(url: URL(string: api)!)
-    req.httpMethod = "POST"
-    req.setValue("application/json", forHTTPHeaderField: "Accept")
-    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    // set JSON payload
-    let payload = try? JSONSerialization.data(withJSONObject: [
+func log(
+    api: String,
+    lat: Double = 0.0,
+    lon: Double = 0.0,
+    time: Int64 = 0, // epoch timestamp in seconds
+    ext: String = "", // extra text payload
+    callback: @escaping (Any) -> Void
+) {
+    let payload: [String: Any] = [
         "lat": lat,
         "lon": lon,
-    ])
-    req.httpBody = payload
-    // init URL session
-    let task = URLSession.shared.dataTask(with: req) { (data, _, _) in
-        guard let data = data else { return }
-        return callback(data)
-    }
-    task.resume()
+        "time": time,
+        "ext": ext,
+    ]
+
+    // implement POST payload to API Server
+    // callback should happen after POST
+    return callback(payload)
 }
